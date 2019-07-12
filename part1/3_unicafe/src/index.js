@@ -6,27 +6,38 @@ const Statistics = (props) => {
 
     const total = good+neutral+bad;
     
-    const avg = total ? ((good*1) + (neutral*0) + (bad*(-1)))/total : 0;
-    const pos = total ? (good/total)*100 : 0;
+    if(!total) {
+        return (
+            <>
+                <h1>statistics</h1>
+                <p>No feedback given</p>
+            </>
+        );
+    }
 
-    return (
-        <>
-            <h1>statistics</h1>
-            <div>
-                good {good}
-                <br />
-                neutral {neutral}
-                <br />
-                bad {bad}
-                <br />
-                total {good+neutral+bad}
-                <br />
-                average {avg}
-                <br />
-                positive {pos} %
-            </div>
-        </>
-    );
+    else {
+        const avg = total ? ((good*1) + (neutral*0) + (bad*(-1)))/total : 0;
+        const pos = total ? (good/total)*100 : 0;
+    
+        return (
+            <>
+                <h1>statistics</h1>
+                <div>
+                    good {good}
+                    <br />
+                    neutral {neutral}
+                    <br />
+                    bad {bad}
+                    <br />
+                    total {good+neutral+bad}
+                    <br />
+                    average {avg}
+                    <br />
+                    positive {pos} %
+                </div>
+            </>
+        );
+    }
 }
 
 const App = () => {
