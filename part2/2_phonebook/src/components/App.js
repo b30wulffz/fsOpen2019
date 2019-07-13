@@ -1,5 +1,37 @@
 import React, { useState } from 'react'
 
+const Filter = (props) => {
+  return (
+    <div>
+      filter shown with<input value={props.value} onChange={props.onChange} />
+    </div>
+  );
+}
+
+const PersonForm = (props) => {
+  return (
+    <form onSubmit={props.addData}>
+      <div>
+        name: <input value={props.newName} onChange={props.updateName} />
+      </div>
+      <div>
+        number: <input value={props.newNumber} onChange={props.updateNumber} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
+const Persons = ({printData}) => {
+  return (
+      <div>
+        {printData}
+      </div>
+  );
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -32,13 +64,25 @@ const App = () => {
       const copy = [...persons];
       copy.push(data);
       setPersons(copy);
-      setDisplayPersons([...persons])
+      setDisplayPersons(copy)
     }
     else {
       alert(`${newName} is already added to phonebook`);
     }
-    
   }
+
+  const search = (event) => {
+    const value = event.target.value;
+    setSearchName(value);
+
+    const data = persons.filter(a=> a.name.toLowerCase().includes( value.toLowerCase() ));
+    if(data.length === 0 && value.length === 0) {
+      setDisplayPersons(persons);
+    }
+    else {
+      setDisplayPersons(data);
+    }
+  } 
 
   const printData = displayPersons.map((person) => {
     return (
@@ -49,41 +93,26 @@ const App = () => {
     )
   });
 
-  const search = (event) => {
-    setSearchName(event.target.value);
-    const data = persons.filter(a=> a.name.toLowerCase().includes( searchName.toLowerCase() ));
-    if(data.length === 0 && searchName.length === 0) {
-      setDisplayPersons([...persons]);
-    }
-    else {
-      setDisplayPersons([...data]);
-    }
-    
-  } 
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with<input value={searchName} onChange={search} />
-      </div>
 
-      <h2>add a new</h2>
-      <form onSubmit={addData}>
-        <div>
-          name: <input value={newName} onChange={updateName} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={updateNumber} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <div>
-        {printData}
-      </div>
+      <Filter value={searchName} onChange={search} />
+
+      <h3>add a new</h3>
+
+      <PersonForm 
+        newName={newName}
+        updateName={updateName}
+        newNumber={newNumber}
+        updateNumber={updateNumber}
+        addData={addData}
+      />
+
+      <h3>Numbers</h3>
+
+      <Persons printData={printData}/>
+
     </div>
   )
 }
