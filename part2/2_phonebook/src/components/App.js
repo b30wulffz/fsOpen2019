@@ -12,12 +12,19 @@ const App = () => {
 
   const addData = (event) => {
     event.preventDefault();
-    const data = {
-      name: newName
-    };
-    const copy = [...persons];
-    copy.push(data);
-    setPersons(copy);
+    
+    if(persons.map( a => a.name).indexOf(newName) === -1) {
+      const data = {
+        name: newName
+      };
+      const copy = [...persons];
+      copy.push(data);
+      setPersons(copy);
+    }
+    else {
+      alert(`${newName} is already added to phonebook`);
+    }
+    
   }
 
   const printData = persons.map((person) => {
