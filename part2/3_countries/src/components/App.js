@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const PrintCountry = ({country}) => {
+  const [weather, changeWeather] = useState(null);
+  useEffect(()=>{
+    axios
+      .get(`http://api.apixu.com/v1/current.json?key=a5f42993d31644a08f5105620191507&q=${country.name}`)
+      .then(response=>{
+        changeWeather(response.data);
+        console.log(response.data);
+      })
+  },[]);
   return (
     <div>
       <h1>{country.name}</h1>
@@ -10,12 +19,29 @@ const PrintCountry = ({country}) => {
         <br />
         population {country.population}
       </div>
-      <h2>languages</h2>
-      <ul>
-        {country.languages.map(language => { return (<li key={language.iso639_1}>{language.name}</li>) })}
-      </ul>
+      <div>
+        <h2>languages</h2>
+        <ul>
+          {country.languages.map(language => { return (<li key={language.iso639_1}>{language.name}</li>) })}
+        </ul>
+      </div>
       <div>
         <img src={country.flag} alt={`${country.name}'s flag`} height='100px'/>
+      </div>
+      <div>
+        <h2>Weather in {country.name}</h2>
+        {
+          weather ? 
+            (
+              <div>
+                <b>temperature: </b>{weather.current.temp_c} Celsius <br />
+                <img src={weather.current.condition.icon} alt="Weather icon"/> <br />
+                <b>wind: </b>{weather.current.wind_kph} kph direction {weather.current.wind_dir}
+              </div>
+            )
+            :
+            (<b>Loading ...</b>)
+        }
       </div>
     </div>
   )
