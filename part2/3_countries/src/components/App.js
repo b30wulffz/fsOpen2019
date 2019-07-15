@@ -8,7 +8,6 @@ const PrintCountry = ({country}) => {
       .get(`http://api.apixu.com/v1/current.json?key=a5f42993d31644a08f5105620191507&q=${country.name}`)
       .then(response=>{
         changeWeather(response.data);
-        console.log(response.data);
       })
   },[]);
   return (
@@ -57,7 +56,6 @@ const Filter = (props) => {
 }
 
 const Output = ({countries, value, setFiltered}) => {
-  console.log(countries)
   if(countries.length >=10) {
     return (
       <>
