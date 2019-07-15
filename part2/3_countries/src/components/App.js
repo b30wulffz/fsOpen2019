@@ -30,7 +30,7 @@ const Filter = (props) => {
   )
 }
 
-const Output = ({countries, value}) => {
+const Output = ({countries, value, setFiltered}) => {
   console.log(countries)
   if(countries.length >=10) {
     return (
@@ -44,6 +44,7 @@ const Output = ({countries, value}) => {
       return (
         <React.Fragment key={country.numericCode}>
           {country.name}
+          <button onClick={()=>setFiltered([country])}>show</button>
           <br />
         </React.Fragment>
       )
@@ -106,7 +107,7 @@ const App = () => {
   return (
     <div>
       <Filter value={searchCountry} onChange={search} />
-      <Output countries={filteredCountries} value={searchCountry}/>
+      <Output countries={filteredCountries} value={searchCountry} setFiltered={setFiltered} />
     </div>
   )
 }
