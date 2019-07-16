@@ -68,10 +68,17 @@ const App = () => {
         name: newName,
         number: newNumber
       };
-      const copy = [...persons];
-      copy.push(data);
-      setPersons(copy);
-      setDisplayPersons(copy)
+
+      axios
+        .post('http://localhost:3001/persons', data)
+        .then(response=>{
+          const copy = [...persons];
+          copy.push(response.data);
+          setPersons(copy);
+          setDisplayPersons(copy)
+        })
+
+      
     }
     else {
       alert(`${newName} is already added to phonebook`);
