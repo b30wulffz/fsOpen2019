@@ -98,11 +98,28 @@ const App = () => {
     }
   } 
 
+  const deleteRecord = (person) => () => {
+    const confirm = window.confirm(`Delete ${person.name} ?`);
+    if(confirm) {
+      phoneService
+        .deleteRec(person.id)
+        .then(response=>{
+          if(response.status === 200) {
+            console.log(`Details of ${person.name} successfully deleted`);
+            setPersons(persons.filter(name => name.id !== person.id));
+            setDisplayPersons(displayPersons.filter(name => name.id !== person.id));
+          }
+        })
+    }
+  } 
+
   const printData = displayPersons.map((person) => {
     return (
       <React.Fragment key={person.name}>
-        {person.name} {person.number}
+        {person.name} {person.number}&nbsp;
+        <button onClick={deleteRecord(person)}>delete</button>
         <br />
+
       </React.Fragment>
     )
   });

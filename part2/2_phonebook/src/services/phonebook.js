@@ -9,7 +9,12 @@ const addNum = (data) => {
     return axios.post(baseUrl, data).then(response=>response.data);
 }
 
+const deleteRec = (p_id) => {
+    return axios.delete(`${baseUrl}/${p_id}`);
+}
+
 export default {
     getAll,
-    addNum
+    addNum,
+    deleteRec
 }
