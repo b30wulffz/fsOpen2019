@@ -13,8 +13,13 @@ const deleteRec = (p_id) => {
     return axios.delete(`${baseUrl}/${p_id}`);
 }
 
+const updateNum = (data) => {
+    return axios.put(`${baseUrl}/${data.id}`, data).then(response => response.data);
+}
+
 export default {
     getAll,
     addNum,
-    deleteRec
+    deleteRec,
+    updateNum
 }

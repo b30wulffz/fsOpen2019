@@ -62,8 +62,8 @@ const App = () => {
 
   const addData = (event) => {
     event.preventDefault();
-    
-    if(persons.map( a => a.name).indexOf(newName) === -1) {
+    const index = persons.map( a => a.name).indexOf(newName);
+    if(index === -1) {
       const data = {
         name: newName,
         number: newNumber
@@ -81,7 +81,21 @@ const App = () => {
       
     }
     else {
-      alert(`${newName} is already added to phonebook`);
+      const confirm = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+      if(confirm) {
+        const updatedData = {
+          ...persons[index],
+          number: newNumber
+        }
+
+        phoneService
+          .updateNum(updatedData)
+          .then(response => {
+            const copy = persons.map(person => (person.id !== response.id) ? person : response );
+            setPersons(copy);
+            setDisplayPersons(copy)
+          })
+      }
     }
   }
 
@@ -105,7 +119,7 @@ const App = () => {
         .deleteRec(person.id)
         .then(response=>{
           if(response.status === 200) {
-            console.log(`Details of ${person.name} successfully deleted`);
+            console.log(`Details of ${person.name} were successfully deleted`);
             setPersons(persons.filter(name => name.id !== person.id));
             setDisplayPersons(displayPersons.filter(name => name.id !== person.id));
           }
