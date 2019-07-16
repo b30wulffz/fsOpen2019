@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import phoneService from './services/phonebook';
+import './index.css'
 
 const Filter = (props) => {
   return (
@@ -33,6 +34,33 @@ const Persons = ({printData}) => {
   );
 }
 
+const Notification = ({errorMessage, success}) => {
+  if(errorMessage === null)
+    return null;
+  else {
+    if(success) {
+      return (
+        <>
+          <div className="message success">
+            {errorMessage}
+          </div>
+          <br />
+        </>
+      )
+    }
+    else {
+      return (
+        <>
+          <div className="message fail">
+            {errorMessage}
+          </div>
+          <br />
+        </>
+      )
+    }
+  }
+}
+
 const App = () => {
 
   const [persons, setPersons] = useState([])
@@ -41,6 +69,9 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchName, setSearchName ] = useState('')
   const [ displayPersons, setDisplayPersons ] = useState([...persons])
+
+  const [ errorMessage, setErrorMessage ] = useState(null)
+  const [ success, setSuccess ] = useState(false)
   
   
   useEffect(()=>{
@@ -60,9 +91,20 @@ const App = () => {
     setNewNumber(event.target.value);
   }
 
+  const messageHandler = (msg, suc) => {
+    setErrorMessage(msg);
+    setSuccess(suc);
+
+    setTimeout(()=>{
+      setErrorMessage(null);
+    }, 5000);
+
+  }
+
   const addData = (event) => {
     event.preventDefault();
     const index = persons.map( a => a.name).indexOf(newName);
+
     if(index === -1) {
       const data = {
         name: newName,
@@ -75,10 +117,13 @@ const App = () => {
           const copy = [...persons];
           copy.push(response);
           setPersons(copy);
-          setDisplayPersons(copy)
+          setDisplayPersons(copy);
+          messageHandler(`Added ${response.name}`, true);
+        })
+        .catch(error => {
+          messageHandler(`${error}. Please try again.`, false);
         })
 
-      
     }
     else {
       const confirm = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
@@ -94,6 +139,10 @@ const App = () => {
             const copy = persons.map(person => (person.id !== response.id) ? person : response );
             setPersons(copy);
             setDisplayPersons(copy)
+            messageHandler(`Updated ${response.name}`, true);
+          })
+          .catch(error => {
+            messageHandler(`${error}. Person not found.`, false);
           })
       }
     }
@@ -119,10 +168,13 @@ const App = () => {
         .deleteRec(person.id)
         .then(response=>{
           if(response.status === 200) {
-            console.log(`Details of ${person.name} were successfully deleted`);
             setPersons(persons.filter(name => name.id !== person.id));
             setDisplayPersons(displayPersons.filter(name => name.id !== person.id));
+            messageHandler(`Details of ${person.name} were successfully deleted`, true);
           }
+        })
+        .catch(error => {
+          messageHandler(`${error}. Person not found.`, false);
         })
     }
   } 
@@ -141,6 +193,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification errorMessage={errorMessage} success={success} />
 
       <Filter value={searchName} onChange={search} />
 
